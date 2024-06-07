@@ -1,4 +1,4 @@
-sudo apt update
+sudo apt update && sudo apt -y full-upgrade
 sudo apt install unzip -y
  
 #========== AWS CLI installation ==========
