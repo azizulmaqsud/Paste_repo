@@ -2,16 +2,38 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: june-24-eks
+  name: june-24-eks-11
   region: us-east-1
+
+vpc:
+  subnets:
+    public:
+      us-east-1a: { cidr: 192.168.0.0/19 }
+      us-east-1b: { cidr: 192.168.32.0/19 }
+      us-east-1c: { cidr: 192.168.64.0/19 }
+    private:
+      us-east-1a: { cidr: 192.168.96.0/19 }
+      us-east-1b: { cidr: 192.168.128.0/19 }
+      us-east-1c: { cidr: 192.168.160.0/19 }
 
 nodeGroups:
   - name: ng-1
     instanceType: t3.medium
-    desiredCapacity: 4
-    privateNetworking: true
+    desiredCapacity: 2
+    privateNetworking: false  # Ensure this is set to false for public subnets
+    ssh:
+      allow: true
+      publicKeyPath: ~/.ssh/id_rsa.pub
+    subnets:
+      - us-east-1a
+      - us-east-1b
+      - us-east-1c
     iam:
       withAddonPolicies:
         albIngress: true
 
 availabilityZones: ["us-east-1a", "us-east-1b", "us-east-1c"]
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["api", "audit", "authenticator", "controllerManager", "scheduler"]
